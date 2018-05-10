@@ -1,1 +1,93 @@
-test
+n = 4
+
+a_m = [[0 for i in range(n*n)]]
+b_m = [0]
+c_m = [1 for i in range(n*n)]
+v_n = ["x" + str(i) + str(j) for i in range(1, n + 1) for j in range(1, n +
+1)]
+
+A = matrix(a_m)
+b = matrix(b_m)
+c = matrix(c_m)
+P = InteractiveLPProblem(A, b, c, v_n, variable_type=">=", problem_type="max",
+base_ring=ZZ)
+
+def create_problem():
+    global a_m
+    global b_m
+    global c_m
+    global v_n
+    global P
+    A = matrix(a_m)
+    b = matrix(b_m)
+    c = matrix(c_m)
+    P = InteractiveLPProblem(A, b, c, v_n, variable_type=">=",
+problem_type="max", base_ring=ZZ)
+
+def rows(n):
+    global a_m
+    global b_m
+    for row in range(1, n*n + 1, n):
+        a_m = a_m + [[1 if k == j or k == i else 0 for k in range(1, n*n + 1)]
+for i in range(row, row + n) for j in range(i + 1, row + n)]
+    b_m = b_m + [1 for i in range(n * (n-1) * n / 2)]
+
+def columns(n):
+    global a_m
+    global b_m
+    for col in range(1, n + 1):
+        a_m = a_m + [[1 if k == j or k == i else 0 for k in range(1, n*n + 1)]
+for i in range(col, col + (n)*n, n) for j in range(i + n, col + (n)*n, n)]
+    b_m = b_m + [1 for i in range(n * (n-1) * n / 2)]
+
+def diagonal1(n):
+    global a_m
+    global b_m
+    l1 = 0
+    l2 = 0
+    for diag in range(1, n*n + 1, n):
+        add = [[1 if k == j or k == i else 0 for k in range(1, n*n + 1)] for i
+in range(diag, n*n + 1, n + 1) for j in range(i + n + 1, n*n + 1, n + 1)]
+        a_m = a_m + add
+        l1 = l1 + len(add)
+    for diag in range(n, n*(n-1) + 1, n):
+        add = [[1 if k == j or k == i else 0 for k in range(1, n*n + 1)] for i
+in range(diag, 0, - n - 1) for j in range(i - n - 1, 0, - n - 1)]
+        a_m = a_m + add
+        l2 =  l2 + len(add)
+    b_m = b_m + [1 for i in range(l1 + l2)]
+
+def diagonal2(n):
+    global a_m
+    global b_m
+    l1 = 0
+    l2 = 0
+    for diag in range(2, n + 1):
+        add = [[1 if k == diag + i*(n - 1) or k == diag + j*(n - 1) else 0 for
+k in range(1, n*n + 1)] for i in range(diag) for j in range(i + 1, diag)]
+        a_m = a_m + add
+        l1 = l1 + len(add)
+    for diag in range(1, n):
+        add = [[1 if k == n + diag * n + i*(n-1) or k == n + diag * n +
+j*(n-1) else 0 for k in range(1, n*n + 1)] for i in range(n - diag) for j in
+range(i + 1, n - diag)]
+        a_m = a_m + add
+        l2 =  l2 + len(add)
+    b_m = b_m + [1 for i in range(l1 + l2)]
+
+def create_queens(n):
+    global a_m
+    global b_m
+    global c_m
+    global v_n
+    rows(n)
+    columns(n)
+    diagonal1(n)
+    diagonal2(n)
+    create_problem()
+
+# diagonal2(n)
+create_queens(n)
+show(P)
+# sol = P.standard_form()
+# show(sol)
