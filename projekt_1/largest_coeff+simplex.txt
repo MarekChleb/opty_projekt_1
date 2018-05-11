@@ -1,0 +1,15 @@
+def largest_coeff(dict):
+    coeff_vector = dict.objective_coefficients()
+    largest_coefficient = np.max(coeff_vector)
+    for i in range (0, coeff_vector.length()):
+        if coeff_vector[i] == largest_coefficient :
+            return dict.nonbasic_variables()[i]
+    
+def simplex(dict):
+    while len(dict.possible_entering()) > 0 :
+        x = largest_coeff(dict)
+        dict.enter(x)
+        dict.leave(dict.possible_leaving()[0])
+        dict.update()
+        show(dict.possible_entering())
+    return dict
