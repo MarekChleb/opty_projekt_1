@@ -1,0 +1,5 @@
+def blands_rule(dict):
+    return str(dict.possible_entering()[0])
+
+def random_choice(dict):
+    return random.choice(dict.possible_entering())

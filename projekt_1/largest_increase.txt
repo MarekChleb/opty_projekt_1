@@ -1,0 +1,13 @@
+def largest_increase(dict):
+    entering_variables = dict.possible_entering()
+    z = 0
+    show(len(entering_variables))
+    for i in range(0,len(entering_variables) ):
+        dict_copy = copy.deepcopy(dict)
+        dict_copy.enter(entering_variables[i])
+        dict_copy.leave(dict_copy.possible_leaving()[0])
+        dict_copy.update()
+        if dict_copy.objective_value() > z:
+            z = dict_copy.objective_value()
+            x = entering_variables[i]
+    return x
